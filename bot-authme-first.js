@@ -9,7 +9,7 @@ const config = {
     version: '1.21.11' // Change to your server version
   },
   bot: {
-    username: 'AFKBOT', // Change to your desired bot name
+    username: 'kevinfngfg', // Change to your desired bot name
     auth: 'offline', // 'offline', 'microsoft', or 'mojang'
     password: 'kevinfngfg', // Minecraft account password (if using premium auth)
     authmePassword: 'kevinfngfg' // AuthMe password for /register and /login
@@ -133,7 +133,8 @@ function createBot() {
       console.log('🔐 Registration required detected');
       setTimeout(() => {
         const password = config.bot.authmePassword;
-        bot.chat(`/register ${password} ${password}`);
+        bot.chat(`${password}`);
+        bot.chat(`${password}`);
         console.log('📝 Sent registration command');
       }, 1500);
     }
@@ -143,7 +144,7 @@ function createBot() {
       (lowerMessage.includes('password') || lowerMessage.includes('/login') || lowerMessage.includes('command'))) {
       console.log('🔑 Login required detected');
       setTimeout(() => {
-        bot.chat(`/login ${config.bot.authmePassword}`);
+        bot.chat(`${config.bot.authmePassword}`);
         console.log('🔓 Sent login command');
         loginAttempts++;
       }, 1500);

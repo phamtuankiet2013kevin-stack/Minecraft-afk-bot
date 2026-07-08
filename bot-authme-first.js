@@ -9,7 +9,7 @@ const config = {
     version: '1.21.11' // Change to your server version
   },
   bot: {
-    username: 'kevinfngfg', // Change to your desired bot name
+    username: 'AFKBOT', // Change to your desired bot name
     auth: 'offline', // 'offline', 'microsoft', or 'mojang'
     password: 'kevinfngfg', // Minecraft account password (if using premium auth)
     authmePassword: 'kevinfngfg' // AuthMe password for /register and /login

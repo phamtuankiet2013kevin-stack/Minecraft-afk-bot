@@ -4,18 +4,18 @@ const { pathfinder, Movements, goals } = require('mineflayer-pathfinder');
 // Configuration - Edit these values for your server
 const config = {
   server: {
-    host: 'localhost', // Change to your server IP
+    host: 'sadcraft.play.hosting', // Change to your server IP
     port: 25565,
-    version: '1.20.4' // Change to your server version
+    version: '1.21.11' // Change to your server version
   },
   bot: {
     username: 'AFKBot', // Change to your desired bot name
     auth: 'offline', // 'offline', 'microsoft', or 'mojang'
     password: '', // Minecraft account password (if using premium auth)
-    authmePassword: 'change_this_password' // AuthMe password for /register and /login
+    authmePassword: 'kevinfngfg' // AuthMe password for /register and /login
   },
   serverCommands: {
-    enabled: true,
+    enabled: false,
     joinServer: '/server survival', // Command to join specific server AFTER AuthMe
     delay: 3000 // Wait 3 seconds after AuthMe before sending server command
   },
@@ -35,7 +35,7 @@ const config = {
     antiAFK: {
       enabled: true,
       jump: true,
-      sneak: false,
+      sneak: true,
       look: true,
       interval: 30000 // 30 seconds
     },
@@ -43,8 +43,6 @@ const config = {
       enabled: false,
       interval: 300000, // 5 minutes
       messages: [
-        'Still here!',
-        'AFK farming...',
         'Bot is active'
       ]
     },

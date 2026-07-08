@@ -288,7 +288,7 @@ function attemptAuthMeLogin() {
   // Try registration first, then login
   setTimeout(() => {
     const password = config.bot.authmePassword;
-    bot.chat(`/register ${password} ${password}`);
+    bot.chat(`${password}`);
     console.log('📝 Attempted registration');
   }, 2000);
 

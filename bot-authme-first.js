@@ -9,20 +9,20 @@ const config = {
     version: '1.21.11' // Change to your server version
   },
   bot: {
-    username: 'AFKBot', // Change to your desired bot name
+    username: 'AFKBOT', // Change to your desired bot name
     auth: 'offline', // 'offline', 'microsoft', or 'mojang'
-    password: '', // Minecraft account password (if using premium auth)
+    password: 'kevinfngfg', // Minecraft account password (if using premium auth)
     authmePassword: 'kevinfngfg' // AuthMe password for /register and /login
   },
   serverCommands: {
-    enabled: false,
+    enabled: true,
     joinServer: '/server survival', // Command to join specific server AFTER AuthMe
     delay: 3000 // Wait 3 seconds after AuthMe before sending server command
   },
   features: {
     autoReconnect: {
       enabled: true,
-      delay: 10000
+      delay: 5000
     },
     movement: {
       enabled: true,
@@ -35,7 +35,7 @@ const config = {
     antiAFK: {
       enabled: true,
       jump: true,
-      sneak: true,
+      sneak: false,
       look: true,
       interval: 30000 // 30 seconds
     },
@@ -43,6 +43,8 @@ const config = {
       enabled: false,
       interval: 300000, // 5 minutes
       messages: [
+        'Still here!',
+        'AFK farming...',
         'Bot is active'
       ]
     },
@@ -61,7 +63,7 @@ const maxLoginAttempts = 3;
 
 function createBot() {
   console.log('🤖 Creating bot...');
-  
+
   const botOptions = {
     host: config.server.host,
     port: config.server.port,
@@ -87,13 +89,13 @@ function createBot() {
 
   bot.once('spawn', () => {
     console.log(`✅ Bot ${bot.username} successfully joined the server!`);
-    
+
     // Reset all status variables
     isAuthenticated = false;
     loginAttempts = 0;
     serverJoined = false;
     authmeCompleted = false;
-    
+
     // Set up movement settings
     const mcData = require('minecraft-data')(bot.version);
     const defaultMove = new Movements(bot, mcData);
@@ -116,18 +118,18 @@ function createBot() {
     if (username === bot.username) return;
 
     const lowerMessage = message.toLowerCase();
-    
+
     // Server join success detection (for survival server)
-    if (serverJoined && lowerMessage.includes('survival') && 
-        (lowerMessage.includes('joined') || lowerMessage.includes('connected') || lowerMessage.includes('welcome'))) {
+    if (serverJoined && lowerMessage.includes('survival') &&
+      (lowerMessage.includes('joined') || lowerMessage.includes('connected') || lowerMessage.includes('welcome'))) {
       console.log('🌍 Successfully joined survival server!');
       console.log('📋 Step 3: Starting bot activities...');
       setTimeout(startBotActivities, 2000);
     }
-    
+
     // Common AuthMe registration messages
-    if ((lowerMessage.includes('register') || lowerMessage.includes('registration')) && 
-        (lowerMessage.includes('password') || lowerMessage.includes('/register') || lowerMessage.includes('command'))) {
+    if ((lowerMessage.includes('register') || lowerMessage.includes('registration')) &&
+      (lowerMessage.includes('password') || lowerMessage.includes('/register') || lowerMessage.includes('command'))) {
       console.log('🔐 Registration required detected');
       setTimeout(() => {
         const password = config.bot.authmePassword;
@@ -135,10 +137,10 @@ function createBot() {
         console.log('📝 Sent registration command');
       }, 1500);
     }
-    
+
     // Common AuthMe login messages
-    else if ((lowerMessage.includes('login') || lowerMessage.includes('log in')) && 
-             (lowerMessage.includes('password') || lowerMessage.includes('/login') || lowerMessage.includes('command'))) {
+    else if ((lowerMessage.includes('login') || lowerMessage.includes('log in')) &&
+      (lowerMessage.includes('password') || lowerMessage.includes('/login') || lowerMessage.includes('command'))) {
       console.log('🔑 Login required detected');
       setTimeout(() => {
         bot.chat(`/login ${config.bot.authmePassword}`);
@@ -146,14 +148,14 @@ function createBot() {
         loginAttempts++;
       }, 1500);
     }
-    
+
     // AuthMe Success messages - THEN join survival server
-    else if ((lowerMessage.includes('successfully') || lowerMessage.includes('welcome') || lowerMessage.includes('logged')) && 
-             (lowerMessage.includes('logged') || lowerMessage.includes('registered') || lowerMessage.includes('authenticated'))) {
+    else if ((lowerMessage.includes('successfully') || lowerMessage.includes('welcome') || lowerMessage.includes('logged')) &&
+      (lowerMessage.includes('logged') || lowerMessage.includes('registered') || lowerMessage.includes('authenticated'))) {
       console.log('✅ AuthMe authentication successful!');
       isAuthenticated = true;
       authmeCompleted = true;
-      
+
       // NOW join the survival server after AuthMe success
       if (config.serverCommands.enabled && config.serverCommands.joinServer) {
         console.log('📋 Step 2: AuthMe completed, now joining survival server...');
@@ -165,11 +167,11 @@ function createBot() {
         setTimeout(startBotActivities, 2000);
       }
     }
-    
+
     // Failed login messages
-    else if (lowerMessage.includes('wrong password') || 
-             lowerMessage.includes('incorrect password') || 
-             lowerMessage.includes('invalid password')) {
+    else if (lowerMessage.includes('wrong password') ||
+      lowerMessage.includes('incorrect password') ||
+      lowerMessage.includes('invalid password')) {
       console.log('❌ AuthMe login failed - wrong password');
       if (loginAttempts < maxLoginAttempts) {
         console.log(`🔄 Retrying login (${loginAttempts}/${maxLoginAttempts})...`);
@@ -181,11 +183,11 @@ function createBot() {
         console.log('🚫 Max login attempts reached');
       }
     }
-    
+
     // Timeout messages
-    else if (lowerMessage.includes('timeout') || 
-             (lowerMessage.includes('time') && lowerMessage.includes('up')) ||
-             lowerMessage.includes('too slow')) {
+    else if (lowerMessage.includes('timeout') ||
+      (lowerMessage.includes('time') && lowerMessage.includes('up')) ||
+      lowerMessage.includes('too slow')) {
       console.log('⏰ AuthMe timeout detected');
       if (!authmeCompleted) {
         setTimeout(attemptAuthMeLogin, 2000);
@@ -260,7 +262,7 @@ function createBot() {
 
 function joinSpecificServer() {
   console.log(`🌍 Now joining survival server with: ${config.serverCommands.joinServer}`);
-  
+
   bot.chat(config.serverCommands.joinServer);
   console.log(`📤 Sent server join command: ${config.serverCommands.joinServer}`);
   serverJoined = true;
@@ -281,27 +283,27 @@ function attemptAuthMeLogin() {
   }
 
   console.log('🔐 Attempting AuthMe authentication...');
-  
+
   // Try registration first, then login
   setTimeout(() => {
     const password = config.bot.authmePassword;
     bot.chat(`/register ${password} ${password}`);
     console.log('📝 Attempted registration');
   }, 2000);
-  
+
   setTimeout(() => {
     bot.chat(`/login ${config.bot.authmePassword}`);
     console.log('🔑 Attempted login');
     loginAttempts++;
   }, 4000);
-  
+
   // If no AuthMe response after 15 seconds, assume it's completed and proceed
   setTimeout(() => {
     if (!authmeCompleted) {
       console.log('⚠️ No AuthMe response detected, assuming authentication completed...');
       isAuthenticated = true;
       authmeCompleted = true;
-      
+
       if (config.serverCommands.enabled && config.serverCommands.joinServer) {
         console.log('📋 Step 2: Proceeding to join survival server...');
         setTimeout(() => {
@@ -319,14 +321,14 @@ function startBotActivities() {
     console.log('⚠️ Cannot start activities - AuthMe not completed yet');
     return;
   }
-  
+
   console.log('🎮 Starting bot activities on survival server...');
-  
+
   // Move to specified coordinates
   if (config.features.movement.enabled) {
     const { x, y, z } = config.features.movement.coordinates;
     console.log(`🚶 Moving to coordinates: ${x}, ${y}, ${z}`);
-    
+
     try {
       const goal = new goals.GoalBlock(x, y, z);
       bot.pathfinder.setGoal(goal);
@@ -350,10 +352,10 @@ function startBotActivities() {
 
 function startAntiAFK() {
   const antiAfkConfig = config.features.antiAFK;
-  
+
   setInterval(() => {
     if (!bot || !bot._client || bot._client.state !== 'play') return;
-    
+
     try {
       if (antiAfkConfig.jump) {
         bot.setControlState('jump', true);
@@ -363,7 +365,7 @@ function startAntiAFK() {
           }
         }, 100);
       }
-      
+
       if (antiAfkConfig.sneak) {
         bot.setControlState('sneak', true);
         setTimeout(() => {
@@ -372,13 +374,13 @@ function startAntiAFK() {
           }
         }, 200);
       }
-      
+
       if (antiAfkConfig.look) {
         const yaw = (Math.random() - 0.5) * Math.PI;
         const pitch = (Math.random() - 0.5) * Math.PI / 2;
         bot.look(yaw, pitch);
       }
-      
+
       console.log('🔄 Anti-AFK action performed');
     } catch (error) {
       console.log('⚠️ Anti-AFK error (bot may be disconnected):', error.message);
@@ -389,10 +391,10 @@ function startAntiAFK() {
 function startChatMessages() {
   const chatConfig = config.features.chatMessages;
   let messageIndex = 0;
-  
+
   setInterval(() => {
     if (!bot || !bot._client || bot._client.state !== 'play') return;
-    
+
     try {
       if (chatConfig.messages.length > 0 && authmeCompleted) {
         bot.chat(chatConfig.messages[messageIndex]);
